@@ -1,0 +1,14 @@
+main {
+    max-width: 900px;
+    margin: 0 auto;
+    overflow: hidden;
+}
+
+#all-items {
+    display: inline-block;
+    border: 1px;
+}
+
+img {
+    width: 300px;
+}
