@@ -42,7 +42,6 @@ new Picture ('usb', './img/usb.gif');
 new Picture ('water-can', './img/water-can.jpg');
 new Picture ('wine-glass', './img/wine-glass.jpg');
 
-// will be defined soon
 let leftImageObject = null;
 let middleImageObject = null;
 let rightImageObject = null; 
@@ -120,7 +119,7 @@ function shuffle(array) {
       array[i] = array[j]
       array[j] = temp
     }
-  }
+}
 
 allImageSectionTag.addEventListener('click', imageClickHandler);
 
