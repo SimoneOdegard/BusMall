@@ -48,3 +48,11 @@ section {
     border-radius: 10px;
     box-shadow: 5px 5px 5px 5px rgba(0, 0, 0, 0.5);
 }
+
+button {
+    margin: 0 auto;
+    border: none;
+    padding: 10px 20px 10px 20px;
+    background-color:rgb(54, 167, 211);
+    color: white;
+}
