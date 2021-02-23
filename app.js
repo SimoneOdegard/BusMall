@@ -8,7 +8,7 @@ const leftItemHeaderTag = document.getElementById('left-item-text');
 const middleItemHeaderTag = document.getElementById('middle-item-text');
 const rightItemHeaderTag = document.getElementById('right-item-text');
 
-const maxClicks = 5;
+const maxClicks = 26;
 let totalClicks = 0;
 
 function Picture (caption, url) {
@@ -88,13 +88,14 @@ function imageClickHandler(event){
         }
         pickNewItems();
     }
+    if (totalClicks === maxClicks){
+        allImageSectionTag.removeEventListener('click', imageClickHandler);
+        alert('Enough clicking');
+        renderLikes();
+    }
 }
 
-if (totalClicks === maxClicks){
-    allImageSectionTag.removeEventListener('click', imageClickHandler);
-    alert('Enough clicking');
-    renderLikes();
-}
+
 
 function renderLikes(){
     const likesListElem = document.getElementById('item-likes');
@@ -103,7 +104,7 @@ function renderLikes(){
         const itemPicture = Picture.all[i];
         const itemPictureElem = document.createElement('li');
         likesListElem.appendChild(itemPictureElem);
-        itemPictureElem.textContent = itemPicture.caption + ' : ' + itemPicture.clicksCounter;
+        itemPictureElem.textContent = itemPicture.caption + ' : ' + itemPicture.clickCounter;
 
     }
 }
