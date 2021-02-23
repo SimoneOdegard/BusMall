@@ -1,5 +1,7 @@
 'use strict';
 
+const productNames = ['bag', 'banana', 'bathroom', 'boots', 'breakfast', 'bubblegum', 'chair', 'cthulhu', 'dog-duck', 'dragon', 'pen', 'pet-sweep', 'scissors', 'shark', 'sweep', 'tauntaun', 'unicorn', 'usb', 'water-can', 'wine-glass']
+
 const allImageSectionTag = document.getElementById('all-items');
 const leftItemImageTag = document.getElementById('left-item-img');
 const middleItemImageTag = document.getElementById('middle-item-img');
@@ -7,9 +9,14 @@ const rightItemImageTag = document.getElementById('right-item-img');
 const leftItemHeaderTag = document.getElementById('left-item-text');
 const middleItemHeaderTag = document.getElementById('middle-item-text');
 const rightItemHeaderTag = document.getElementById('right-item-text');
+const viewResults = document.getElementById('results');
 
 const maxClicks = 26;
 let totalClicks = 0;
+
+let leftImageObject = null;
+let middleImageObject = null;
+let rightImageObject = null; 
 
 function Picture (caption, url) {
     this.caption = caption;
@@ -21,37 +28,31 @@ function Picture (caption, url) {
 };
                 
 Picture.all = [];
-new Picture ('bag', './img/bag.jpg');
-new Picture ('banana', './img/banana.jpg');
-new Picture ('bathroom', './img/bathroom.jpg');
-new Picture ('boots', './img/boots.jpg');
-new Picture ('breakfast', './img/breakfast.jpg');
-new Picture ('bubblegum', './img/bubblegum.jpg');
-new Picture ('chair', './img/chair.jpg');
-new Picture ('cthulhu', './img/cthulhu.jpg');
-new Picture ('dog-duck', './img/dog-duck.jpg');
-new Picture ('dragon', './img/dragon.jpg');
-new Picture ('pen', './img/pen.jpg');
-new Picture ('pet-sweep', './img/pet-sweep.jpg');
-new Picture ('scissors', './img/scissors.jpg');
-new Picture ('shark', './img/shark.jpg');
-new Picture ('sweep', './img/sweep.png');
-new Picture ('tauntaun', './img/tauntaun.jpg');
-new Picture ('unicorn', './img/unicorn.jpg');
-new Picture ('usb', './img/usb.gif');
-new Picture ('water-can', './img/water-can.jpg');
-new Picture ('wine-glass', './img/wine-glass.jpg');
 
-// will be defined soon
-let leftImageObject = null;
-let middleImageObject = null;
-let rightImageObject = null; 
+function createProducts(){
+    for (let i = 0; i < productNames.length; i++){
+        const productName = productNames[i];
+        new Picture (productName, './img/' + productName + '.jpg');
+    }
+}
 
 function pickNewItems(){
     shuffle(Picture.all);
-    leftImageObject = Picture.all[0];
-    middleImageObject = Picture.all[1];
-    rightImageObject = Picture.all[2];
+
+    const safeProducts = [];
+    for (let i = 0; i < Picture.all.length; i++){
+        const product = Picture.all[i];
+        if (product !== leftImageObject && product !== middleImageObject && product !== rightImageObject){
+            safeProducts.push(product);
+            if (safeProducts.length === 3){
+                break;
+            }
+        }
+    }
+
+    leftImageObject = safeProducts[0];
+    middleImageObject = safeProducts[1];
+    rightImageObject = safeProducts[2];
 
     leftImageObject.shownCounter += 1;
     middleImageObject.shownCounter += 1;
@@ -91,11 +92,11 @@ function imageClickHandler(event){
     if (totalClicks === maxClicks){
         allImageSectionTag.removeEventListener('click', imageClickHandler);
         alert('Enough clicking');
-        renderLikes();
+        viewResults.style.display = 'block';
     }
 }
 
-
+viewResults.addEventListener('click', renderLikes);
 
 function renderLikes(){
     const likesListElem = document.getElementById('item-likes');
@@ -104,8 +105,7 @@ function renderLikes(){
         const itemPicture = Picture.all[i];
         const itemPictureElem = document.createElement('li');
         likesListElem.appendChild(itemPictureElem);
-        itemPictureElem.textContent = itemPicture.caption + ' : ' + itemPicture.clickCounter;
-
+        itemPictureElem.textContent = itemPicture.caption + ' : ' + itemPicture.clickCounter + '/' + itemPicture.shownCounter;
     }
 }
 
@@ -120,9 +120,11 @@ function shuffle(array) {
       array[i] = array[j]
       array[j] = temp
     }
-  }
+}
 
 allImageSectionTag.addEventListener('click', imageClickHandler);
 
-renderLikes();
+createProducts();
 pickNewItems();
+
+viewResults.style.display = 'none';
