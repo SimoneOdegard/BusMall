@@ -1,14 +1,30 @@
+* {
+    box-sizing: border-box;
+    background-color: rgb(247, 247, 164);
+}
+
+header {
+    text-align: center;
+    width: 100%;
+}
+
 main {
     max-width: 900px;
     margin: 0 auto;
     overflow: hidden;
+    text-align: center;
 }
 
 #all-items {
-    display: inline-block;
-    border: 1px;
+    display: flex;
+}
+
+section {
+    flex: 1;
 }
 
 img {
-    width: 300px;
+    max-height: 300px;
+    max-width: 100%;
+    padding: 5px;
 }
