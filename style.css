@@ -1,5 +1,6 @@
 * {
     box-sizing: border-box;
+    background-color: rgb(247, 247, 164);
 }
 
 header {
@@ -16,7 +17,6 @@ main {
 
 #all-items {
     display: flex;
-    margin: 0 auto;
 }
 
 section {
@@ -26,6 +26,5 @@ section {
 img {
     max-height: 300px;
     max-width: 100%;
-    margin: 0 auto;
     padding: 5px;
 }
