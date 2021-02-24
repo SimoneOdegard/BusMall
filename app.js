@@ -10,15 +10,17 @@ const leftItemHeaderTag = document.getElementById('left-item-text');
 const middleItemHeaderTag = document.getElementById('middle-item-text');
 const rightItemHeaderTag = document.getElementById('right-item-text');
 const viewResults = document.getElementById('results');
+const viewChart = document.getElementById('chart');
+const resultsSection = document.getElementById('item-likes');
 
 const maxClicks = 26;
 let totalClicks = 0;
 
 let leftImageObject = null;
 let middleImageObject = null;
-let rightImageObject = null; 
+let rightImageObject = null;
 
-function Picture (caption, url) {
+function Picture(caption, url) {
     this.caption = caption;
     this.url = url;
     this.clickCounter = 0;
@@ -26,25 +28,25 @@ function Picture (caption, url) {
 
     Picture.all.push(this);
 };
-                
+
 Picture.all = [];
 
-function createProducts(){
-    for (let i = 0; i < productNames.length; i++){
+function createProducts() {
+    for (let i = 0; i < productNames.length; i++) {
         const productName = productNames[i];
-        new Picture (productName, './img/' + productName + '.jpg');
+        new Picture(productName, './img/' + productName + '.jpg');
     }
 }
 
-function pickNewItems(){
+function pickNewItems() {
     shuffle(Picture.all);
 
     const safeProducts = [];
-    for (let i = 0; i < Picture.all.length; i++){
+    for (let i = 0; i < Picture.all.length; i++) {
         const product = Picture.all[i];
-        if (product !== leftImageObject && product !== middleImageObject && product !== rightImageObject){
+        if (product !== leftImageObject && product !== middleImageObject && product !== rightImageObject) {
             safeProducts.push(product);
-            if (safeProducts.length === 3){
+            if (safeProducts.length === 3) {
                 break;
             }
         }
@@ -63,7 +65,7 @@ function pickNewItems(){
     totalClicks += 1;
 }
 
-function renderNewItems(){
+function renderNewItems() {
     leftItemImageTag.src = leftImageObject.url;
     leftItemImageTag.alt = leftImageObject.caption;
     leftItemHeaderTag.textContent = leftImageObject.caption;
@@ -77,31 +79,38 @@ function renderNewItems(){
     rightItemHeaderTag.textContent = rightImageObject.caption;
 }
 
-function imageClickHandler(event){
-    if (totalClicks <= maxClicks){    
+function imageClickHandler(event) {
+    if (totalClicks <= maxClicks) {
         const clickedId = event.target.id;
-        if(clickedId === 'left-item-img'){
+        if (clickedId === 'left-item-img') {
             leftImageObject.clickCounter += 1;
-        } else if(clickedId == 'middle-item-img'){
+        } else if (clickedId == 'middle-item-img') {
             middleImageObject.clickCounter += 1;
-        } else if (clickedId == 'right-item-img'){
+        } else if (clickedId == 'right-item-img') {
             rightImageObject.clickCounter += 1;
         }
         pickNewItems();
     }
-    if (totalClicks === maxClicks){
+    if (totalClicks === maxClicks) {
         allImageSectionTag.removeEventListener('click', imageClickHandler);
         alert('Enough clicking');
         viewResults.style.display = 'block';
+        viewChart.style.display = 'block';
+        resultsSection.style.display = 'block';
     }
 }
 
-viewResults.addEventListener('click', renderLikes);
+function resultsClickHandler(event){
+    renderLikes();
+    renderChart();
+}
 
-function renderLikes(){
+viewResults.addEventListener('click', resultsClickHandler);
+
+function renderLikes() {
     const likesListElem = document.getElementById('item-likes');
     likesListElem.innerHTML = '';
-    for (let i = 0; i < Picture.all.length; i++){
+    for (let i = 0; i < Picture.all.length; i++) {
         const itemPicture = Picture.all[i];
         const itemPictureElem = document.createElement('li');
         likesListElem.appendChild(itemPictureElem);
@@ -115,11 +124,43 @@ https://medium.com/@nitinpatel_20236/how-to-shuffle-correctly-shuffle-an-array-i
 
 function shuffle(array) {
     for (let i = array.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * i)
-      const temp = array[i]
-      array[i] = array[j]
-      array[j] = temp
+        const j = Math.floor(Math.random() * i)
+        const temp = array[i]
+        array[i] = array[j]
+        array[j] = temp
     }
+}
+
+function renderChart() {
+    const clicks = [];
+    const displayedCounter =[];
+    for (let i = 0; i < Picture.all.length; i++){
+        const voteCount = Picture.all[i].clickCounter;
+        const timesVoted = Picture.all[i].shownCounter;
+        clicks.push(voteCount);
+        displayedCounter.push(timesVoted);
+    }
+
+    const ctx = document.getElementById('canvas').getContext('2d');
+    const chart = new Chart(ctx, {
+        type: 'horizontalBar',
+        data: {
+            labels: productNames,
+            datasets: [{
+                label: 'Clicks',
+                backgroundColor: 'rgb(54, 167, 211)',
+                borderColor: 'rgb(54, 167, 211)',
+                data: clicks,
+            },
+            {
+                label: 'Displayed Counter',
+                backgroundColor: 'rgb(253, 179, 195)',
+                borderColor: 'rgb(253, 179, 195)',
+                data: displayedCounter,
+        }]
+        },
+        options: {}
+    });
 }
 
 allImageSectionTag.addEventListener('click', imageClickHandler);
@@ -128,3 +169,5 @@ createProducts();
 pickNewItems();
 
 viewResults.style.display = 'none';
+viewChart.style.display = 'none';
+resultsSection.style.display = 'none';
