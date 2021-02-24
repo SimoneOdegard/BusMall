@@ -44,7 +44,10 @@ function pickNewItems() {
     const safeProducts = [];
     for (let i = 0; i < Picture.all.length; i++) {
         const product = Picture.all[i];
-        if (product !== leftImageObject && product !== middleImageObject && product !== rightImageObject) {
+        if (product !== leftImageObject && 
+            product !== middleImageObject && 
+            product !== rightImageObject) {
+                
             safeProducts.push(product);
             if (safeProducts.length === 3) {
                 break;
