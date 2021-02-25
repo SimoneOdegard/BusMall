@@ -31,10 +31,30 @@ function Picture(caption, url) {
 
 Picture.all = [];
 
-function createProducts() {
+function createProductsFromScratch() {
     for (let i = 0; i < productNames.length; i++) {
         const productName = productNames[i];
         new Picture(productName, './img/' + productName + '.jpg');
+    }
+}
+
+function createProductsFromStorage(storedData) {
+    const javaScriptImages = JSON.parse(storedData);
+    for (let i = 0; i < javaScriptImages.length; i++) {
+        const rawData = javaScriptImages[i];
+        const newPictureInst = new Picture(rawData.caption, rawData.url);
+        newPictureInst.clickCounter = rawData.clickCounter;
+        newPictureInst.shownCounter = rawData.shownCounter;
+    }
+}
+
+function createProducts(){
+    // are we creating from scratch or from storage
+    const storedData = localStorage.getItem('imageStorage');
+    if (storedData === null){
+        createProductsFromScratch();
+    } else {
+        createProductsFromStorage(storedData);
     }
 }
 
@@ -100,6 +120,12 @@ function imageClickHandler(event) {
         viewResults.style.display = 'block';
         viewChart.style.display = 'block';
         resultsSection.style.display = 'block';
+        // step 1
+        const JSONImages = JSON.stringify(Picture.all);
+        console.log({JSONImages});
+
+        // step 2
+        localStorage.setItem('imageStorage', JSONImages);
     }
 }
 
@@ -174,3 +200,12 @@ pickNewItems();
 viewResults.style.display = 'none';
 viewChart.style.display = 'none';
 resultsSection.style.display = 'none';
+
+
+// step 3
+// const localStorageImages = localStorage.getItem('imageStorage');
+// console.log({localStorageImages});
+
+// // step 4
+// const javaScriptImages = JSON.parse(localStorageImages);
+// console.log({javaScriptImages});
