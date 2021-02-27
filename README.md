@@ -1,6 +1,7 @@
 # BusMall
 
 Simone Odegard
+BusMall tracks clicks of users to see what items they like most. Items are randomized by a shuffle array. Results are shown by text and by a chart.
 
 2/22 8:37pm Figured out the clicks and amounts!
 

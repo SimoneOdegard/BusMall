@@ -1,7 +1,9 @@
 'use strict';
 
+// product names array
 const productNames = ['bag', 'banana', 'bathroom', 'boots', 'breakfast', 'bubblegum', 'chair', 'cthulhu', 'dog-duck', 'dragon', 'pen', 'pet-sweep', 'scissors', 'shark', 'sweep', 'tauntaun', 'unicorn', 'usb', 'water-can', 'wine-glass']
 
+// variables for html IDs
 const allImageSectionTag = document.getElementById('all-items');
 const leftItemImageTag = document.getElementById('left-item-img');
 const middleItemImageTag = document.getElementById('middle-item-img');
@@ -13,24 +15,30 @@ const viewResults = document.getElementById('results');
 const viewChart = document.getElementById('chart');
 const resultsSection = document.getElementById('item-likes');
 
+// Amount of clicks that the user can click plus click counter
 const maxClicks = 26;
 let totalClicks = 0;
 
+// Image Objects
 let leftImageObject = null;
 let middleImageObject = null;
 let rightImageObject = null;
 
+// Constructor function
 function Picture(caption, url) {
     this.caption = caption;
     this.url = url;
     this.clickCounter = 0;
     this.shownCounter = 0;
 
+
     Picture.all.push(this);
 };
 
+// Array for constructor function
 Picture.all = [];
 
+// Creates products from scratch
 function createProductsFromScratch() {
     for (let i = 0; i < productNames.length; i++) {
         const productName = productNames[i];
@@ -38,6 +46,7 @@ function createProductsFromScratch() {
     }
 }
 
+// Pull products from storage
 function createProductsFromStorage(storedData) {
     const javaScriptImages = JSON.parse(storedData);
     for (let i = 0; i < javaScriptImages.length; i++) {
@@ -48,8 +57,8 @@ function createProductsFromStorage(storedData) {
     }
 }
 
+// Creates products
 function createProducts(){
-    // are we creating from scratch or from storage
     const storedData = localStorage.getItem('imageStorage');
     if (storedData === null){
         createProductsFromScratch();
@@ -58,6 +67,7 @@ function createProducts(){
     }
 }
 
+// Shuffles products without them repeating. Adds to click counter. Calls the render so the items show up.
 function pickNewItems() {
     shuffle(Picture.all);
 
@@ -88,6 +98,7 @@ function pickNewItems() {
     totalClicks += 1;
 }
 
+// Renders new products
 function renderNewItems() {
     leftItemImageTag.src = leftImageObject.url;
     leftItemImageTag.alt = leftImageObject.caption;
@@ -102,6 +113,7 @@ function renderNewItems() {
     rightItemHeaderTag.textContent = rightImageObject.caption;
 }
 
+// Click handler, shows results and chart after turning off the event listener. Converts Picture.all into JSON format and puts into local storage
 function imageClickHandler(event) {
     if (totalClicks <= maxClicks) {
         const clickedId = event.target.id;
@@ -129,13 +141,16 @@ function imageClickHandler(event) {
     }
 }
 
+// Renders likes and chart
 function resultsClickHandler(event){
     renderLikes();
     renderChart();
 }
 
+// Event listener for results button
 viewResults.addEventListener('click', resultsClickHandler);
 
+// Renders the product name, the clicks/votes, and the times the item appears
 function renderLikes() {
     const likesListElem = document.getElementById('item-likes');
     likesListElem.innerHTML = '';
@@ -150,7 +165,7 @@ function renderLikes() {
 /* fisher yates style shuffle
 https://medium.com/@nitinpatel_20236/how-to-shuffle-correctly-shuffle-an-array-in-javascript-15ea3f84bfb
 */
-
+// Shuffle array for pictures
 function shuffle(array) {
     for (let i = array.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * i)
@@ -160,21 +175,25 @@ function shuffle(array) {
     }
 }
 
+// Renders chart
 function renderChart() {
     const clicks = [];
     const displayedCounter =[];
+    const pictureNames = [];
     for (let i = 0; i < Picture.all.length; i++){
         const voteCount = Picture.all[i].clickCounter;
         const timesVoted = Picture.all[i].shownCounter;
+        const pictureName = Picture.all[i].caption;
         clicks.push(voteCount);
         displayedCounter.push(timesVoted);
+        pictureNames.push(pictureName);
     }
 
     const ctx = document.getElementById('canvas').getContext('2d');
     const chart = new Chart(ctx, {
         type: 'horizontalBar',
         data: {
-            labels: productNames,
+            labels: pictureNames,
             datasets: [{
                 label: 'Clicks',
                 backgroundColor: 'rgb(54, 167, 211)',
@@ -192,20 +211,14 @@ function renderChart() {
     });
 }
 
+// Event listener for click handler
 allImageSectionTag.addEventListener('click', imageClickHandler);
 
+// Calls these two functions
 createProducts();
 pickNewItems();
 
+// Hides results including button and chart
 viewResults.style.display = 'none';
 viewChart.style.display = 'none';
 resultsSection.style.display = 'none';
-
-
-// step 3
-// const localStorageImages = localStorage.getItem('imageStorage');
-// console.log({localStorageImages});
-
-// // step 4
-// const javaScriptImages = JSON.parse(localStorageImages);
-// console.log({javaScriptImages});
